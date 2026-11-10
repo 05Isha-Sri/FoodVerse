@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodVerse | Food Delivery</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header class="header">
+    <div class="header-container">
+        <a href="#" class="brand"><span class="brand-icon"><i data-lucide="utensils-crossed"></i></span><span>Food<strong>Verse</strong></span></a>
+        <nav id="main-nav" class="nav-links"></nav>
+        <div class="header-actions">
+            <div id="auth-container"></div>
+            <button id="cart-btn" class="cart-btn" style="display:none"><i data-lucide="shopping-bag" class="inline-icon"></i> Cart <span id="cart-badge" class="cart-badge">0</span></button>
+        </div>
+    </div>
+</header>
+
+<main class="main">
+    <!-- CUSTOMER APP -->
+    <div id="customer-app" class="role-app" style="display:none">
+        <section class="hero customer-hero">
+            <div>
+                <span class="hero-tag"><i data-lucide="sparkles" class="inline-icon"></i> FoodVerse</span>
+                <h1 class="hero-title">Good food. Great choices.</h1>
+                <p class="hero-subtitle">Discover restaurants, explore menus and get your favourites delivered.</p>
+            </div>
+        </section>
+        <div class="search-section"><div class="search-input-wrapper"><i data-lucide="search"></i><input id="search-input" placeholder="Search restaurants or dishes..."></div></div>
+        <section id="customer-home-section" class="app-section">
+            <div class="section-header"><div><p class="eyebrow">DISCOVER</p><h2 class="section-title">Restaurants near you</h2></div></div>
+            <div id="restaurants-grid" class="restaurants-grid"></div>
+            <div id="customer-menu-container" style="display:none">
+                <div class="section-header menu-heading"><div><p class="eyebrow">MENU</p><h2 id="selected-restaurant-title" class="section-title">Choose a restaurant</h2></div></div>
+                <div id="menu-grid" class="menu-grid"></div>
+            </div>
+        </section>
+        <section id="customer-orders-section" class="app-section" style="display:none">
+            <div class="section-header">
+                <div>
+                    <p class="eyebrow">TRACK</p>
+                    <h2 class="section-title">My Orders</h2>
+                </div>
+                <button id="refresh-customer-orders" class="btn btn-outline">Refresh</button>
+            </div>
+            <div id="orders-list" class="orders-list"></div>
+        </section>
+    </div>
+
+    <!-- RESTAURANT OWNER APP -->
+    <div id="owner-app" class="role-app" style="display:none">
+        <section class="dashboard-hero"><div><p class="eyebrow">RESTAURANT PARTNER</p><h1>Manage your FoodVerse business</h1><p>Set up your restaurant, control your menu and process incoming orders from one dashboard.</p></div><div class="dashboard-icon"><i data-lucide="store"></i></div></section>
+        <div class="stats-grid" id="owner-stats"></div>
+        <section class="dashboard-panel" id="owner-setup-panel">
+            <div class="panel-heading"><div><p class="eyebrow">YOUR RESTAURANT</p><h2 id="owner-restaurant-heading">Create your restaurant</h2></div></div>
+            <form id="restaurant-form" class="dashboard-form" autocomplete="off">
+                <div class="form-grid"><div class="form-group"><label class="form-label">Restaurant Name</label><input id="restaurant-name" class="form-control" placeholder="e.g. Green Leaf Kitchen" required></div><div class="form-group"><label class="form-label">Description</label><textarea id="restaurant-description" class="form-control" rows="3" placeholder="Short description for customers"></textarea></div></div>
+                <button class="btn btn-primary" type="submit" id="restaurant-save-btn">Create Restaurant</button>
+            </form>
+        </section>
+        <section class="dashboard-panel" id="owner-menu-panel" style="display:none">
+            <div class="panel-heading"><div><p class="eyebrow">MENU MANAGEMENT</p><h2>Your Food Menu</h2></div><button id="add-food-btn" class="btn btn-primary">+ Add Food</button></div>
+            <div id="owner-menu-list" class="management-list"></div>
+        </section>
+        <section class="dashboard-panel" id="owner-orders-panel" style="display:none">
+            <div class="panel-heading"><div><p class="eyebrow">OPERATIONS</p><h2>Incoming Orders</h2></div><button id="refresh-owner-orders" class="btn btn-outline">Refresh</button></div>
+            <div id="owner-orders-list" class="orders-list"></div>
+        </section>
+    </div>
+
+    <!-- DELIVERY AGENT APP -->
+    <div id="delivery-app" class="role-app" style="display:none">
+        <section class="dashboard-hero delivery-hero"><div><p class="eyebrow">DELIVERY PARTNER</p><h1>Delivery dashboard</h1><p>Find ready orders, accept a delivery and mark it delivered when it reaches the customer.</p></div><div class="dashboard-icon"><i data-lucide="bike"></i></div></section>
+        <div class="stats-grid" id="delivery-stats"></div>
+        <section class="dashboard-panel"><div class="panel-heading"><div><p class="eyebrow">READY FOR PICKUP</p><h2>Orders ready for delivery</h2><p class="muted">Only orders marked <strong>Ready for Pickup</strong> by the restaurant can be accepted.</p></div><button id="refresh-delivery" class="btn btn-outline">Refresh</button></div><div id="available-deliveries" class="orders-list"></div></section>
+        <section class="dashboard-panel"><div class="panel-heading"><div><p class="eyebrow">IN PROGRESS</p><h2>Orders being prepared</h2><p class="muted">These orders are waiting for the restaurant. They cannot be accepted yet.</p></div></div><div id="waiting-deliveries" class="orders-list"></div></section>
+        <section class="dashboard-panel"><div class="panel-heading"><div><p class="eyebrow">MY RUNS</p><h2>Active & completed deliveries</h2></div></div><div id="my-deliveries" class="orders-list"></div></section>
+    </div>
+
+    <!-- ADMIN APP -->
+    <div id="admin-app" class="role-app" style="display:none">
+        <section class="dashboard-hero admin-hero">
+            <div>
+                <p class="eyebrow">PLATFORM ADMINISTRATION</p>
+                <h1>FoodVerse Command Center</h1>
+                <p>Monitor platform statistics, manage active user accounts, approve restaurant partners, and track all live orders.</p>
+            </div>
+            <div class="dashboard-icon"><i data-lucide="shield-check"></i></div>
+        </section>
+        
+        <div class="stats-grid" id="admin-stats"></div>
+
+        <section class="dashboard-panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">PARTNERS</p>
+                    <h2>Restaurants Management</h2>
+                </div>
+                <button id="refresh-admin-restaurants" class="btn btn-outline btn-sm">Refresh</button>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Restaurant</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-restaurants-tbody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="dashboard-panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">ACCOUNTS</p>
+                    <h2>Users Management</h2>
+                </div>
+                <button id="refresh-admin-users" class="btn btn-outline btn-sm">Refresh</button>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-users-tbody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="dashboard-panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">PLATFORM ORDERS</p>
+                    <h2>All Live & Completed Orders</h2>
+                </div>
+                <button id="refresh-admin-orders" class="btn btn-outline btn-sm">Refresh</button>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Customer</th>
+                            <th>Restaurant</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Address</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-orders-tbody"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</main>
+
+<!-- CART -->
+<aside id="cart-drawer" class="cart-drawer"><div class="cart-header"><div class="cart-title"><i data-lucide="shopping-bag" class="inline-icon"></i> Your Cart</div><button id="cart-close-btn" class="cart-close-btn">&times;</button></div><div id="cart-items-list" class="cart-items-list"></div><div class="cart-footer"><div class="form-group"><label class="form-label">Delivery Address</label><textarea id="address-input" class="form-control" rows="2" placeholder="Enter the address where you want your food delivered"></textarea></div><div class="bill-breakdown"><div class="bill-row"><span>Subtotal</span><span id="cart-subtotal">₹0.00</span></div><div class="bill-row"><span>Delivery Fee</span><span id="cart-delivery-fee">₹0.00</span></div><div class="bill-row"><span>Estimated Tax (5%)</span><span id="cart-tax">₹0.00</span></div><div class="bill-row total"><span>Total</span><span id="cart-grand-total">₹0.00</span></div></div><button id="checkout-btn" class="btn btn-primary checkout-btn" disabled>Place Order</button><button id="clear-cart-btn" class="btn btn-outline btn-sm" style="width:100%;margin-top:.5rem">Clear Cart</button></div></aside>
+<div id="cart-backdrop" class="cart-drawer-backdrop"></div>
+
+<!-- AUTH -->
+<div id="auth-modal-backdrop" class="modal-backdrop auth-page-backdrop">
+    <div class="modal-card auth-page-card">
+        <div class="auth-brand">
+            <div class="auth-brand-icon"><i data-lucide="utensils-crossed"></i></div>
+            <div class="auth-brand-name">Food<span>Verse</span></div>
+            <p class="auth-tagline">A complete food delivery platform</p>
+        </div>
+        <button id="auth-modal-close" type="button" class="cart-close-btn auth-close" aria-label="Close">&times;</button>
+        <div class="modal-body auth-page-body">
+            <div class="tabs">
+                <button id="login-tab-btn" class="tab-btn active">Sign In</button>
+                <button id="register-tab-btn" class="tab-btn">Create Account</button>
+            </div>
+            <form id="login-form" autocomplete="off">
+                <div class="form-group">
+                    <label class="form-label" for="login-username">Username</label>
+                    <input id="login-username" class="form-control" autocomplete="off" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="login-password">Password</label>
+                    <div class="password-input-group">
+                        <input id="login-password" type="password" class="form-control" autocomplete="new-password" placeholder="Enter your password" required>
+                        <button type="button" id="toggle-login-password" class="password-toggle-btn" aria-label="Show password" title="Show / Hide password">
+                            <span id="login-pwd-icon" class="eye-icon"><i data-lucide="eye"></i></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-remember-group">
+                    <label class="remember-label" for="remember-login-check">
+                        <input type="checkbox" id="remember-login-check" class="remember-checkbox">
+                        <span>Save login info</span>
+                    </label>
+                </div>
+                <button class="btn btn-primary auth-submit" type="submit">Sign In</button>
+            </form>
+            <form id="register-form" style="display:none" autocomplete="off">
+                <div class="form-group">
+                    <label class="form-label" for="reg-username">Username</label>
+                    <input id="reg-username" class="form-control" autocomplete="off" placeholder="Enter a username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reg-email">Email</label>
+                    <input id="reg-email" type="email" class="form-control" autocomplete="off" placeholder="Enter your email address" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reg-password">Password</label>
+                    <div class="password-input-group">
+                        <input id="reg-password" type="password" minlength="8" class="form-control" autocomplete="new-password" placeholder="Create a password (min 8 chars)" required>
+                        <button type="button" id="toggle-reg-password" class="password-toggle-btn" aria-label="Show password" title="Show / Hide password">
+                            <span id="reg-pwd-icon" class="eye-icon"><i data-lucide="eye"></i></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reg-role">Account type</label>
+                    <select id="reg-role" class="form-control">
+                        <option value="CUSTOMER">Customer — order food</option>
+                        <option value="RESTAURANT_OWNER">Restaurant Owner — manage restaurant</option>
+                        <option value="DELIVERY_AGENT">Delivery Agent — deliver orders</option>
+                        <option value="ADMIN">Platform Admin</option>
+                    </select>
+                </div>
+                <div class="form-group" id="admin-key-group" style="display:none">
+                    <label class="form-label" for="reg-admin-key">Admin Security Key</label>
+                    <input id="reg-admin-key" type="password" class="form-control" autocomplete="off" placeholder="Enter admin setup key">
+                    <small class="muted" style="display:block;margin-top:.25rem">Security Key: <code>FoodVerseAdmin2026</code></small>
+                </div>
+                <button class="btn btn-primary auth-submit" type="submit">Create Account</button>
+            </form>
+        </div>
+        <div class="auth-food-note">
+            <span><i data-lucide="sparkles" class="inline-icon"></i> Fresh food</span><span>•</span><span><i data-lucide="smartphone" class="inline-icon"></i> Easy ordering</span><span>•</span><span><i data-lucide="zap" class="inline-icon"></i> Fast delivery</span>
+        </div>
+    </div>
+</div>
+
+<div id="food-modal-backdrop" class="modal-backdrop"><div class="modal-card"><div class="modal-header"><div><p class="eyebrow">MENU MANAGEMENT</p><h3 id="food-modal-title" class="modal-title">Add Food Item</h3></div><button id="food-modal-close" type="button" class="cart-close-btn">&times;</button></div><div class="modal-body"><form id="food-form"><input type="hidden" id="food-id"><div class="form-group"><label class="form-label">Food Name</label><input id="food-name" class="form-control" placeholder="Enter food name" required></div><div class="form-group"><label class="form-label">Description</label><textarea id="food-description" class="form-control" rows="3" placeholder="Describe the dish"></textarea></div><div class="form-grid"><div class="form-group"><label class="form-label">Price (₹)</label><input id="food-price" type="number" min="0.01" step="0.01" class="form-control" placeholder="Enter price" required></div><div class="form-group"><label class="form-label">Availability</label><select id="food-available" class="form-control"><option value="true">Available</option><option value="false">Unavailable</option></select></div></div><button class="btn btn-primary" style="width:100%" type="submit">Save Food Item</button></form></div></div></div>
+<div id="toast-container" class="toast-container"></div>
+<footer class="footer"><p>© 2026 FoodVerse • A mini food delivery platform</p></footer>
+<script src="js/lucide.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
